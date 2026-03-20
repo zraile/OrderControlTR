@@ -8,7 +8,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(MappingProfile).Assembly);
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(MappingProfile).Assembly));
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         return services;
     }
