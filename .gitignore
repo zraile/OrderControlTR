@@ -416,3 +416,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Angular build output
+src/frontend/dist/
+src/frontend/.angular/
+src/frontend/.vscode/
