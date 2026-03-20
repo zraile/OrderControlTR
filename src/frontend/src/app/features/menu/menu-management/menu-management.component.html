@@ -1,0 +1,84 @@
+<app-navbar title="Menü Yönetimi"></app-navbar>
+<div class="p-6 overflow-auto flex-1 flex gap-6">
+  <!-- Left: Categories -->
+  <div class="w-64 flex-shrink-0">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+        <h3 class="font-semibold">Kategoriler</h3>
+        <button (click)="showCategoryForm = !showCategoryForm" class="text-green-600 hover:text-green-700 text-sm">+ Ekle</button>
+      </div>
+
+      <div *ngIf="showCategoryForm" class="p-4 border-b border-gray-100">
+        <input [(ngModel)]="categoryForm.name" placeholder="Kategori adı"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-2">
+        <button (click)="saveCategory()" class="w-full bg-green-500 text-white py-2 rounded-lg text-sm">Kaydet</button>
+      </div>
+
+      <div class="divide-y divide-gray-50">
+        <button (click)="selectCategory(null)"
+          [class]="!selectedCategory ? 'bg-slate-800 text-white' : 'text-slate-700 hover:bg-gray-50'"
+          class="w-full text-left px-4 py-3 text-sm font-medium transition-colors">
+          Tüm Ürünler
+        </button>
+        <div *ngFor="let cat of categories" class="flex items-center">
+          <button (click)="selectCategory(cat)"
+            [class]="selectedCategory?.id === cat.id ? 'bg-slate-800 text-white' : 'text-slate-700 hover:bg-gray-50'"
+            class="flex-1 text-left px-4 py-3 text-sm font-medium transition-colors">
+            {{ cat.name }}
+          </button>
+          <button (click)="deleteCategory(cat)" class="px-3 py-3 text-red-400 hover:text-red-600">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Items -->
+  <div class="flex-1">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-semibold text-slate-800">{{ selectedCategory?.name || 'Tüm Ürünler' }} ({{ filteredItems.length }})</h3>
+      <button (click)="showItemForm = true; editingItem = null" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">+ Ürün Ekle</button>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let item of filteredItems" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div class="flex justify-between items-start mb-2">
+          <span class="font-semibold text-slate-800">{{ item.name }}</span>
+          <span [class]="item.isAvailable ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'" class="text-xs px-2 py-1 rounded-full">
+            {{ item.isAvailable ? 'Aktif' : 'Pasif' }}
+          </span>
+        </div>
+        <div class="text-green-600 font-bold mb-3">{{ item.price | currencyTr }}</div>
+        <div class="text-slate-400 text-sm mb-3">{{ item.description }}</div>
+        <div class="flex gap-2">
+          <button (click)="editItem(item)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 rounded-lg text-sm">Düzenle</button>
+          <button (click)="deleteItem(item)" class="flex-1 bg-red-50 hover:bg-red-100 text-red-700 py-2 rounded-lg text-sm">Sil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Item Form Modal -->
+<div *ngIf="showItemForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+    <h3 class="font-semibold text-lg mb-4">{{ editingItem ? 'Ürün Düzenle' : 'Yeni Ürün' }}</h3>
+    <div class="space-y-3">
+      <input [(ngModel)]="itemForm.name" placeholder="Ürün adı" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+      <textarea [(ngModel)]="itemForm.description" placeholder="Açıklama" class="w-full px-3 py-2 border border-gray-300 rounded-lg h-20 resize-none"></textarea>
+      <input type="number" [(ngModel)]="itemForm.price" placeholder="Fiyat" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+      <select [(ngModel)]="itemForm.menuCategoryId" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+        <option value="0">Kategori Seçin</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+      </select>
+      <input [(ngModel)]="itemForm.imageUrl" placeholder="Resim URL" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+      <label class="flex items-center gap-2">
+        <input type="checkbox" [(ngModel)]="itemForm.isAvailable" class="rounded">
+        <span>Aktif</span>
+      </label>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button (click)="saveItem()" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold">Kaydet</button>
+      <button (click)="closeItemForm()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-slate-700 py-2 rounded-lg">İptal</button>
+    </div>
+  </div>
+</div>

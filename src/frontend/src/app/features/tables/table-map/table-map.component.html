@@ -1,0 +1,27 @@
+<app-navbar title="Masa Haritası"></app-navbar>
+<div class="p-6 overflow-auto flex-1">
+  <!-- Filter Buttons -->
+  <div class="flex gap-3 mb-6">
+    <button (click)="applyFilter('all')" [class]="filter === 'all' ? 'bg-slate-800 text-white' : 'bg-white text-slate-700 border border-slate-300'" class="px-4 py-2 rounded-lg font-medium transition-colors">Tümü ({{ tables.length }})</button>
+    <button (click)="applyFilter('available')" [class]="filter === 'available' ? 'bg-green-500 text-white' : 'bg-white text-slate-700 border border-slate-300'" class="px-4 py-2 rounded-lg font-medium transition-colors">🟢 Boş</button>
+    <button (click)="applyFilter('occupied')" [class]="filter === 'occupied' ? 'bg-red-500 text-white' : 'bg-white text-slate-700 border border-slate-300'" class="px-4 py-2 rounded-lg font-medium transition-colors">🔴 Dolu</button>
+    <button (click)="applyFilter('reserved')" [class]="filter === 'reserved' ? 'bg-yellow-500 text-white' : 'bg-white text-slate-700 border border-slate-300'" class="px-4 py-2 rounded-lg font-medium transition-colors">🟡 Rezerve</button>
+    <a routerLink="/orders/new/0" class="ml-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">+ Yeni Sipariş</a>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <div *ngIf="!loading" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div *ngFor="let table of filteredTables"
+      (click)="onTableClick(table)"
+      [class]="'border-2 rounded-xl p-4 cursor-pointer transition-all ' + getTableClass(table.status)">
+      <div class="text-lg font-bold text-slate-800">{{ table.name }}</div>
+      <div class="text-xs text-slate-500 mt-1">{{ table.capacity }} kişilik</div>
+      <div class="text-sm mt-2 font-medium">{{ getStatusLabel(table.status) }}</div>
+    </div>
+
+    <div *ngIf="filteredTables.length === 0" class="col-span-full text-center py-12 text-slate-400">
+      Masa bulunamadı
+    </div>
+  </div>
+</div>

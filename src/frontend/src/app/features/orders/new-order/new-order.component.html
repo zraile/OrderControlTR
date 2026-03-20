@@ -1,0 +1,78 @@
+<app-navbar title="Yeni Sipariş"></app-navbar>
+<div class="flex flex-1 overflow-hidden h-[calc(100vh-73px)]">
+  <!-- Left: Menu -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Categories -->
+    <div class="flex gap-2 p-4 overflow-x-auto border-b bg-white">
+      <button (click)="selectCategory(null)"
+        [class]="selectedCategory === null ? 'bg-slate-800 text-white' : 'bg-gray-100 text-slate-700'"
+        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors">
+        Tümü
+      </button>
+      <button *ngFor="let cat of categories" (click)="selectCategory(cat.id)"
+        [class]="selectedCategory === cat.id ? 'bg-slate-800 text-white' : 'bg-gray-100 text-slate-700'"
+        class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors">
+        {{ cat.name }}
+      </button>
+    </div>
+
+    <!-- Items Grid -->
+    <div class="flex-1 overflow-auto p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 content-start">
+      <button *ngFor="let item of filteredItems" (click)="addToCart(item)"
+        class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:border-green-400 hover:shadow-md transition-all text-left">
+        <div class="w-full h-24 bg-gray-100 rounded-lg mb-3 flex items-center justify-center text-3xl">🍽️</div>
+        <div class="font-semibold text-slate-800 text-sm">{{ item.name }}</div>
+        <div class="text-green-600 font-bold mt-1">{{ item.price | currencyTr }}</div>
+      </button>
+      <div *ngIf="filteredItems.length === 0" class="col-span-full text-center py-12 text-slate-400">Bu kategoride ürün bulunmuyor</div>
+    </div>
+  </div>
+
+  <!-- Right: Cart -->
+  <div class="w-80 bg-white border-l border-gray-200 flex flex-col">
+    <div class="p-4 border-b border-gray-100">
+      <h3 class="font-semibold text-slate-800">🛒 Sipariş Özeti</h3>
+      <div class="text-sm text-slate-500">Masa {{ tableId || 'Seçilmedi' }}</div>
+    </div>
+
+    <div class="flex-1 overflow-auto p-4 space-y-3">
+      <div *ngFor="let item of cart" class="bg-gray-50 rounded-lg p-3">
+        <div class="flex justify-between items-start">
+          <span class="font-medium text-sm">{{ item.name }}</span>
+          <button (click)="removeFromCart(item)" class="text-red-400 hover:text-red-600 ml-2">🗑️</button>
+        </div>
+        <div class="flex items-center justify-between mt-2">
+          <div class="flex items-center gap-2">
+            <button (click)="updateQty(item, -1)" class="w-7 h-7 rounded-full bg-gray-200 hover:bg-gray-300 font-bold text-sm">-</button>
+            <span class="font-semibold w-6 text-center">{{ item.quantity }}</span>
+            <button (click)="updateQty(item, 1)" class="w-7 h-7 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold text-sm">+</button>
+          </div>
+          <span class="font-semibold text-green-600 text-sm">{{ item.price * item.quantity | currencyTr }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="cart.length === 0" class="text-center py-8 text-slate-400">Henüz ürün eklenmedi</div>
+    </div>
+
+    <!-- Notes -->
+    <div class="p-4 border-t border-gray-100">
+      <textarea [(ngModel)]="orderNotes" placeholder="Sipariş notu..."
+        class="w-full text-sm border border-gray-200 rounded-lg p-2 resize-none h-16 focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+    </div>
+
+    <!-- Total & Actions -->
+    <div class="p-4 border-t border-gray-100 bg-gray-50">
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-slate-600 font-medium">Toplam:</span>
+        <span class="text-2xl font-bold text-green-600">{{ total | currencyTr }}</span>
+      </div>
+      <button (click)="submitOrder()" [disabled]="cart.length === 0 || submitting"
+        class="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-3 rounded-xl mb-2 transition-colors">
+        {{ submitting ? 'Gönderiliyor...' : '✅ Sipariş Ver' }}
+      </button>
+      <button (click)="cancel()" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-slate-700 font-medium py-2 rounded-xl transition-colors">
+        İptal
+      </button>
+    </div>
+  </div>
+</div>

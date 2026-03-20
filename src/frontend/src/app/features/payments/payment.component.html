@@ -1,0 +1,28 @@
+<app-navbar title="Ödemeler"></app-navbar>
+<div class="p-6 overflow-auto flex-1">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+    <table class="w-full">
+      <thead>
+        <tr class="text-left text-slate-500 text-sm border-b border-gray-100">
+          <th class="px-6 py-3">No</th>
+          <th class="px-6 py-3">Sipariş</th>
+          <th class="px-6 py-3">Tutar</th>
+          <th class="px-6 py-3">Ödeme Tipi</th>
+          <th class="px-6 py-3">Tarih</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of payments" class="border-b border-gray-50 hover:bg-gray-50">
+          <td class="px-6 py-4">#{{ payment.id }}</td>
+          <td class="px-6 py-4">#{{ payment.orderId }}</td>
+          <td class="px-6 py-4 font-semibold text-green-600">{{ payment.amount | currencyTr }}</td>
+          <td class="px-6 py-4">{{ getPaymentTypeLabel(payment.paymentType) }}</td>
+          <td class="px-6 py-4 text-slate-500 text-sm">{{ payment.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+        </tr>
+        <tr *ngIf="payments.length === 0 && !loading">
+          <td colspan="5" class="px-6 py-8 text-center text-slate-400">Ödeme bulunmuyor</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

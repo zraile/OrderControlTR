@@ -1,0 +1,66 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-slate-800">🍽️ OrderControlTR</h1>
+      <p class="text-slate-500 mt-2">Yeni Hesap Oluştur</p>
+    </div>
+
+    <div *ngIf="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+      {{ error }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #regForm="ngForm">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Ad</label>
+          <input type="text" [(ngModel)]="model.firstName" name="firstName" required
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Ad">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2">Soyad</label>
+          <input type="text" [(ngModel)]="model.lastName" name="lastName" required
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Soyad">
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+        <input type="email" [(ngModel)]="model.email" name="email" required
+          class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="email@example.com">
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-slate-700 mb-2">Kullanıcı Adı</label>
+        <input type="text" [(ngModel)]="model.userName" name="userName" required
+          class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="kullanici_adi">
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-slate-700 mb-2">Şifre</label>
+        <input type="password" [(ngModel)]="model.password" name="password" required minlength="6"
+          class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="••••••••">
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-slate-700 mb-2">Telefon</label>
+        <input type="tel" [(ngModel)]="model.phoneNumber" name="phoneNumber"
+          class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          placeholder="5551234567">
+      </div>
+
+      <button type="submit" [disabled]="loading || regForm.invalid"
+        class="w-full bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-semibold py-3 rounded-lg transition-colors">
+        {{ loading ? 'Kaydediliyor...' : 'Kayıt Ol' }}
+      </button>
+    </form>
+
+    <div class="mt-6 text-center">
+      <a routerLink="/login" class="text-green-600 hover:text-green-700 text-sm">Zaten hesabınız var mı? Giriş yapın</a>
+    </div>
+  </div>
+</div>
