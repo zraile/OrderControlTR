@@ -1,0 +1,20 @@
+<app-navbar title="Masa Detayı"></app-navbar>
+<div class="p-6 overflow-auto flex-1">
+  <div class="flex items-center gap-4 mb-6">
+    <button (click)="goBack()" class="text-slate-600 hover:text-slate-800">← Geri</button>
+    <h2 class="text-xl font-semibold">{{ table?.name }}</h2>
+    <button (click)="newOrder()" class="ml-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">+ Yeni Sipariş</button>
+  </div>
+
+  <div *ngIf="orders.length === 0 && !loading" class="text-center py-12 text-slate-400">Bu masada sipariş bulunmuyor</div>
+
+  <div class="space-y-4">
+    <div *ngFor="let order of orders" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between">
+        <span class="font-mono">#{{ order.id }}</span>
+        <span class="font-semibold text-green-600">{{ order.totalAmount | currencyTr }}</span>
+      </div>
+      <div class="text-sm text-slate-500 mt-1">{{ order.createdAt | date:'dd.MM.yyyy HH:mm' }}</div>
+    </div>
+  </div>
+</div>

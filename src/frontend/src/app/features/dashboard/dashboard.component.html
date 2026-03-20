@@ -1,0 +1,75 @@
+<app-navbar title="Dashboard"></app-navbar>
+<div class="p-6 overflow-auto flex-1">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <div *ngIf="!loading">
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="text-slate-500 text-sm mb-1">Bugünkü Satış</div>
+        <div class="text-2xl font-bold text-green-600">{{ (summary?.totalSales || 0) | currencyTr }}</div>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="text-slate-500 text-sm mb-1">Sipariş Sayısı</div>
+        <div class="text-2xl font-bold text-blue-600">{{ summary?.orderCount || recentOrders.length }}</div>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="text-slate-500 text-sm mb-1">Aktif Masalar</div>
+        <div class="text-2xl font-bold text-orange-600">{{ summary?.activeTableCount || tablesData?.occupiedCount || 0 }}</div>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="text-slate-500 text-sm mb-1">Ort. Sipariş Tutarı</div>
+        <div class="text-2xl font-bold text-purple-600">{{ (summary?.averageOrderAmount || 0) | currencyTr }}</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-3 gap-6 mb-8">
+      <div class="col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <h3 class="text-slate-700 font-semibold mb-4">Son 7 Gün Satışlar</h3>
+        <canvas #salesChart></canvas>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <h3 class="text-slate-700 font-semibold mb-4">Ödeme Tipleri</h3>
+        <canvas #paymentChart></canvas>
+      </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+      <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+        <h3 class="text-slate-700 font-semibold">Son Siparişler</h3>
+        <a routerLink="/orders" class="text-green-600 hover:text-green-700 text-sm">Tümünü Gör →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+            <tr class="text-left text-slate-500 text-sm border-b border-gray-100">
+              <th class="px-6 py-3">Sipariş No</th>
+              <th class="px-6 py-3">Masa</th>
+              <th class="px-6 py-3">Tutar</th>
+              <th class="px-6 py-3">Durum</th>
+              <th class="px-6 py-3">Tarih</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of recentOrders" class="border-b border-gray-50 hover:bg-gray-50">
+              <td class="px-6 py-4 font-mono text-sm">#{{ order.id }}</td>
+              <td class="px-6 py-4">{{ order.tableName || 'Masa ' + order.tableId }}</td>
+              <td class="px-6 py-4 font-semibold">{{ order.totalAmount | currencyTr }}</td>
+              <td class="px-6 py-4">
+                <span [class]="'px-2 py-1 rounded-full text-xs font-medium ' + getOrderStatusClass(order.status)">
+                  {{ getOrderStatusLabel(order.status) }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-slate-500 text-sm">{{ order.createdAt | date:'dd.MM.yyyy HH:mm' }}</td>
+            </tr>
+            <tr *ngIf="recentOrders.length === 0">
+              <td colspan="5" class="px-6 py-8 text-center text-slate-400">Henüz sipariş bulunmuyor</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

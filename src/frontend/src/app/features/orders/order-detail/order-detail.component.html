@@ -1,0 +1,55 @@
+<app-navbar title="Sipariş Detayı"></app-navbar>
+<div class="p-6 overflow-auto flex-1">
+  <div class="mb-4">
+    <a routerLink="/orders" class="text-slate-600 hover:text-slate-800">← Siparişler</a>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-12">Yükleniyor...</div>
+
+  <div *ngIf="order && !loading" class="max-w-2xl">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h2 class="text-xl font-semibold">#{{ order.id }} - {{ order.tableName || 'Masa ' + order.tableId }}</h2>
+          <div class="text-slate-500 text-sm">{{ order.createdAt | date:'dd.MM.yyyy HH:mm' }}</div>
+        </div>
+        <div class="text-2xl font-bold text-green-600">{{ order.totalAmount | currencyTr }}</div>
+      </div>
+
+      <div class="flex gap-2 flex-wrap mb-4">
+        <button (click)="updateStatus(OrderStatus.Preparing)" class="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-sm">Hazırlanıyor</button>
+        <button (click)="updateStatus(OrderStatus.Ready)" class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm">Hazır</button>
+        <button (click)="updateStatus(OrderStatus.Delivered)" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm">Teslim Edildi</button>
+        <button (click)="updateStatus(OrderStatus.Cancelled)" class="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-sm">İptal Et</button>
+      </div>
+
+      <div class="border-t border-gray-100 pt-4">
+        <div *ngFor="let item of order.orderItems" class="flex justify-between py-2 border-b border-gray-50">
+          <span>{{ item.menuItemName || 'Ürün #' + item.menuItemId }} x{{ item.quantity }}</span>
+          <span class="font-semibold">{{ item.totalPrice | currencyTr }}</span>
+        </div>
+        <div *ngIf="!order.orderItems?.length" class="text-slate-400 text-sm py-2">Sipariş kalemleri yükleniyor...</div>
+      </div>
+    </div>
+
+    <button (click)="showPayment = !showPayment" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl">
+      💳 Ödeme Al
+    </button>
+
+    <div *ngIf="showPayment" class="mt-4 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <h3 class="font-semibold mb-4">Ödeme Tipi Seçin</h3>
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <button (click)="paymentType = PaymentType.Cash" [class]="paymentType === PaymentType.Cash ? 'bg-green-500 text-white' : 'bg-gray-100 text-slate-700'" class="py-4 rounded-xl font-semibold transition-colors">💵 Nakit</button>
+        <button (click)="paymentType = PaymentType.CreditCard" [class]="paymentType === PaymentType.CreditCard ? 'bg-green-500 text-white' : 'bg-gray-100 text-slate-700'" class="py-4 rounded-xl font-semibold transition-colors">💳 Kredi Kartı</button>
+        <button (click)="paymentType = PaymentType.Online" [class]="paymentType === PaymentType.Online ? 'bg-green-500 text-white' : 'bg-gray-100 text-slate-700'" class="py-4 rounded-xl font-semibold transition-colors">📱 Online</button>
+      </div>
+      <div class="flex justify-between items-center mb-4">
+        <span class="text-slate-600">Toplam:</span>
+        <span class="text-2xl font-bold text-green-600">{{ order.totalAmount | currencyTr }}</span>
+      </div>
+      <button (click)="completePayment()" [disabled]="paying" class="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-3 rounded-xl">
+        {{ paying ? 'İşleniyor...' : 'Ödemeyi Tamamla' }}
+      </button>
+    </div>
+  </div>
+</div>
