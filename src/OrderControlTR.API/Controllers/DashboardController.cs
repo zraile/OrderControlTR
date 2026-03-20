@@ -13,7 +13,7 @@ namespace OrderControlTR.API.Controllers;
 public class DashboardController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private const int AllBranches = 0;
+    private const int NoBranchFilter = 0;
 
     public DashboardController(AppDbContext context)
     {
@@ -35,11 +35,11 @@ public class DashboardController : ControllerBase
             .CountAsync();
 
         var totalTableCount = await _context.Tables
-            .Where(t => t.BranchId == branchId || branchId == AllBranches)
+            .Where(t => t.BranchId == branchId || branchId == NoBranchFilter)
             .CountAsync();
 
         var occupiedTableCount = await _context.Tables
-            .Where(t => (t.BranchId == branchId || branchId == AllBranches) && t.Status == TableStatus.Occupied)
+            .Where(t => (t.BranchId == branchId || branchId == NoBranchFilter) && t.Status == TableStatus.Occupied)
             .CountAsync();
 
         return Ok(new DashboardSummaryDto
@@ -93,7 +93,7 @@ public class DashboardController : ControllerBase
     public async Task<IActionResult> GetTablesStatusSummary([FromQuery] int branchId)
     {
         var summary = await _context.Tables
-            .Where(t => t.BranchId == branchId || branchId == AllBranches)
+            .Where(t => t.BranchId == branchId || branchId == NoBranchFilter)
             .GroupBy(t => t.Status)
             .Select(g => new TableStatusSummaryDto
             {
