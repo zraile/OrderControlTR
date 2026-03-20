@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { lastValueFrom } from 'rxjs';
 import { MenuService } from '../../../core/services/menu.service';
 import { OrderService } from '../../../core/services/order.service';
 import { TableService } from '../../../core/services/table.service';
@@ -106,7 +107,7 @@ export class NewOrderComponent implements OnInit {
           this.tableService.updateStatus(this.tableId, TableStatus.Occupied).subscribe();
         }
 
-        Promise.all(addItems.map(obs => obs.toPromise())).then(() => {
+        Promise.all(addItems.map(obs => lastValueFrom(obs))).then(() => {
           this.router.navigate(['/orders']);
         });
       },
