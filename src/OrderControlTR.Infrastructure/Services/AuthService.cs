@@ -47,13 +47,16 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponseDto> LoginAsync(LoginRequestDto request)
     {
+        var emailLower = request.Email?.ToLowerInvariant();
         var user = await _context.Users
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.UserName == request.UserName);
+            .FirstOrDefaultAsync(u =>
+                (!string.IsNullOrEmpty(emailLower) && u.Email.ToLower() == emailLower) ||
+                (!string.IsNullOrEmpty(request.UserName) && u.UserName == request.UserName));
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            throw new UnauthorizedAccessException("Invalid username or password.");
+            throw new UnauthorizedAccessException("Invalid username/email or password.");
 
         return await GenerateAuthResponse(user);
     }
