@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ordercontroltr-api
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=ordercontroltr;Username=postgres;Password=postgres123
+      - JwtSettings__SecretKey=OrderControlTR_SuperSecret_Key_2024_MinLength32Chars!
+      - JwtSettings__Issuer=OrderControlTR
+      - JwtSettings__Audience=OrderControlTR
+      - JwtSettings__ExpiryHours=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ordercontroltr-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=ordercontroltr
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
